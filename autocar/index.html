@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>초음파 자율주행 자동차 · 신유지 포트폴리오</title>
+<meta name="description" content="ATmega128A 초음파 자율주행 자동차 프로젝트 기술서">
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="../assets/detail.css">
+<script>if (window.top !== window.self) document.documentElement.classList.add("embed");</script>
+</head>
+<body>
+<main>
+
+  <p class="back"><a href="../">← 프로젝트 목록</a></p>
+
+  <header>
+    <p class="when">2026.06 · 개인</p>
+    <h1>초음파 자율주행 자동차</h1>
+    <p class="one">초음파 센서 자동 주행과 블루투스 수동 주행을 갖춘 RC카</p>
+    <ul class="tags"><li class="tag" data-t="C">C</li><li class="tag" data-t="ATmega128A">ATmega128A</li><li class="tag" data-t="UART">UART</li><li class="tag" data-t="PWM">PWM</li></ul>
+  </header>
+
+  <video class="demo" src="../assets/video/auto-car.mp4" controls muted playsinline preload="metadata"></video>
+
+  <h2>1. 프로젝트 개요</h2>
+  <dl class="spec">
+    <dt>프로젝트명</dt><dd>초음파 자율주행 자동차</dd>
+    <dt>수행기간</dt><dd>2026.06.22 ~ 2026.06.25</dd>
+    <dt>수행인원</dt><dd>개인</dd>
+    <dt>담당역할</dt><dd>전체 (하드웨어 배선, 펌웨어)</dd>
+    <dt>사용 기술</dt><dd>C, ATmega128A, L298N, HC-SR04 × 3, HC-06(Bluetooth), FND</dd>
+    <dt>링크</dt><dd><a href="https://github.com/shinyuji/auto-car" target="_blank" rel="noopener">GitHub</a></dd>
+  </dl>
+
+  <h2>2. 개발 배경 및 목적</h2>
+  <ul>
+    <li>교육 과정 ATmega128A 개인 과제</li>
+    <li>타이머·PWM·외부 인터럽트·UART를 함께 사용하는 제어 학습</li>
+  </ul>
+
+  <h2>3. 개발 목표</h2>
+  <ul>
+    <li>초음파 센서 3개 기반 장애물 회피 자동 주행</li>
+    <li>블루투스 명령 기반 수동 주행</li>
+    <li>버튼으로 주행 모드 전환</li>
+  </ul>
+
+  <h2>4. 주요 구현 내용</h2>
+  <ul>
+    <li>모터: Timer1 Fast PWM으로 좌우 바퀴 속도 개별 제어 (L298N)</li>
+    <li>초음파: 세 센서를 60ms 간격으로 순차 측정해 간섭 방지, 외부 인터럽트와 Timer3로 Echo 폭 측정</li>
+    <li>자동 주행: 전방 근접 시 넓은 쪽으로 회전, 좌우 거리 차이에 비례한 PWM 보정, 세 방향 차단 시 정지</li>
+    <li>수동 주행: 블루투스 문자 명령 <code>F</code> / <code>B</code> / <code>L</code> / <code>R</code> / <code>S</code></li>
+    <li>FND에 주행 시간·회전 횟수 표시</li>
+  </ul>
+
+  <h2>5. 문제 해결</h2>
+  <h3>5.1 버튼 미동작</h3>
+  <dl class="spec">
+    <dt>문제</dt><dd>모드 전환 버튼 미동작</dd>
+    <dt>초기 판단</dt><dd>코드 오류로 판단해 하루 가까이 코드만 검토</dd>
+    <dt>원인 확인</dt><dd>오실로스코프로 신호 측정 결과, 버튼 회로 결선 오류</dd>
+    <dt>해결</dt><dd>결선 수정</dd>
+  </dl>
+
+  <h2>6. 결과</h2>
+  <ul>
+    <li>자동 주행(장애물 회피)과 블루투스 수동 주행 시연</li>
+  </ul>
+  <div class="pair">
+    <img class="shot" src="../assets/img/auto-car-photo.jpg" alt="자율주행 자동차" loading="lazy">
+    <img class="shot" src="../assets/img/auto-car-top.jpg" alt="자율주행 자동차 배선" loading="lazy">
+  </div>
+
+  <h2>7. 느낀 점</h2>
+  <ul>
+    <li>소프트웨어 문제로 보이던 오동작이 결선 문제였던 경험을 통해, 코드 검토와 함께 실제 신호를 측정해 확인해야 한다는 점</li>
+  </ul>
+
+  <p class="back bottom"><a href="../">← 프로젝트 목록</a></p>
+</main>
+</body>
+</html>

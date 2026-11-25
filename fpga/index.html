@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FPGA I²C 센서 드라이버 · 신유지 포트폴리오</title>
+<meta name="description" content="Basys3 FPGA I²C 센서 드라이버 프로젝트 기술서">
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="../assets/detail.css">
+<script>if (window.top !== window.self) document.documentElement.classList.add("embed");</script>
+</head>
+<body>
+<main>
+
+  <p class="back"><a href="../">← 프로젝트 목록</a></p>
+
+  <header>
+    <p class="when">2026.11 · 팀 2인</p>
+    <h1>FPGA I²C 센서 드라이버</h1>
+    <p class="one">Basys3 보드 두 개를 I²C로 연결한 센서 데이터 송수신 RTL 설계</p>
+    <ul class="tags"><li class="tag" data-t="Verilog">Verilog</li><li class="tag" data-t="I²C">I²C</li><li class="tag" data-t="UART">UART</li></ul>
+  </header>
+
+  <video class="demo" src="../assets/video/fpga-i2c.mp4" controls muted playsinline preload="metadata"></video>
+
+  <h2>1. 프로젝트 개요</h2>
+  <dl class="spec">
+    <dt>프로젝트명</dt><dd>FPGA I²C 센서 드라이버</dd>
+    <dt>수행기간</dt><dd>2026.11</dd>
+    <dt>수행인원</dt><dd>2인 (Master 1, Slave 1)</dd>
+    <dt>담당역할</dt><dd>Master 보드 RTL 설계</dd>
+    <dt>사용 기술</dt><dd>Verilog, Vivado, Basys3, HC-SR04, DHT11, SSD1306 OLED</dd>
+  </dl>
+
+  <h2>2. 개발 배경 및 목적</h2>
+  <ul>
+    <li>교육 과정 FPGA 팀 과제</li>
+    <li>I²C 프로토콜의 RTL 구현 및 보드 간 통신 학습</li>
+  </ul>
+
+  <h2>3. 개발 목표</h2>
+  <ul>
+    <li>Slave 보드의 거리·온습도 측정값을 Master 보드가 I²C로 읽기</li>
+    <li>FND, UART, OLED로 측정값 표시</li>
+  </ul>
+
+  <h2>4. 시스템 구성</h2>
+  <ul>
+    <li>Slave: HC-SR04 거리, DHT11 온습도를 주기적으로 측정해 레지스터에 저장 (0x00 거리, 0x01 온도, 0x02 습도)</li>
+    <li>Master: I²C(100kHz)로 Slave 레지스터를 하나씩 읽어 출력</li>
+    <li>보드 간 연결: JA1 SDA, JA2 SCL, 공통 GND, SDA/SCL 풀업 저항</li>
+  </ul>
+
+  <h2>5. 주요 구현 내용 (Master)</h2>
+  <ul>
+    <li>I²C 레지스터 선택 후 1바이트 단위 읽기</li>
+    <li>FND에 거리 표시</li>
+    <li>UART와 SSD1306 OLED에 거리·온도·습도 표시</li>
+  </ul>
+
+  <h2>6. 문제 해결</h2>
+
+  <h3>6.1 거리 표시 이상</h3>
+  <dl class="spec">
+    <dt>문제</dt><dd>FND·OLED의 초음파 센서(HC-SR04) 거리 값 표시 이상</dd>
+    <dt>원인 확인</dt><dd>Slave 응답은 레지스터당 1바이트인데 Master가 2바이트를 읽음</dd>
+    <dt>해결</dt><dd>Master 읽기 길이를 1바이트로 맞춤 (1바이트 수신 후 NACK, STOP)</dd>
+  </dl>
+
+  <h3>6.2 통신 끊김 직후 잘못된 값 표시</h3>
+  <dl class="spec">
+    <dt>문제</dt><dd>보드 간 연결이 끊긴 직후 잘못된 값 표시</dd>
+    <dt>원인 확인</dt><dd>연결이 끊기면 Slave의 ACK 응답이 없어 NACK 발생, 이때 수신값은 0xFF(SDA가 풀업으로 High 유지) 또는 0x00이지만 성공 여부 확인 없이 그대로 저장해 표시</dd>
+    <dt>해결</dt><dd>STOP 완료 후 전송 오류(NACK, 버스 멈춤)를 확인해 성공한 경우에만 저장, 오류 시 출력은 대시(-)로 표시</dd>
+  </dl>
+
+  <h2>7. 결과</h2>
+  <ul>
+    <li>보드 간 I²C 통신으로 센서 값 수신 및 3종 출력 장치 표시 시연</li>
+  </ul>
+  <img class="shot" src="../assets/img/fpga-i2c.jpg" alt="Basys3 보드 두 개와 초음파, 온습도 센서를 연결한 I²C 시연" loading="lazy">
+
+  <p class="back bottom"><a href="../">← 프로젝트 목록</a></p>
+</main>
+</body>
+</html>

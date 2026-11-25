@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>세탁기 동작 구현 · 신유지 포트폴리오</title>
+<meta name="description" content="ATmega128A 세탁기 동작 구현 프로젝트 기술서">
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="../assets/detail.css">
+<script>if (window.top !== window.self) document.documentElement.classList.add("embed");</script>
+</head>
+<body>
+<main>
+
+  <p class="back"><a href="../">← 프로젝트 목록</a></p>
+
+  <header>
+    <p class="when">2026.06 · 개인</p>
+    <h1>세탁기 동작 구현</h1>
+    <p class="one">버튼과 타이머로 세탁 → 헹굼 → 탈수 순서를 제어하는 세탁기</p>
+    <ul class="tags"><li class="tag" data-t="C">C</li><li class="tag" data-t="ATmega128A">ATmega128A</li><li class="tag" data-t="FSM">FSM</li><li class="tag" data-t="PWM">PWM</li></ul>
+  </header>
+
+  <video class="demo" src="../assets/video/washing-machine.mp4" controls muted playsinline preload="metadata"></video>
+
+  <h2>1. 프로젝트 개요</h2>
+  <dl class="spec">
+    <dt>프로젝트명</dt><dd>세탁기 동작 구현</dd>
+    <dt>수행기간</dt><dd>2026.06.18 ~ 2026.06.22</dd>
+    <dt>수행인원</dt><dd>개인</dd>
+    <dt>담당역할</dt><dd>전체</dd>
+    <dt>사용 기술</dt><dd>C, ATmega128A, L298N, DC 모터, FND, LED</dd>
+    <dt>링크</dt><dd><a href="https://github.com/shinyuji/washing-machine" target="_blank" rel="noopener">GitHub</a></dd>
+  </dl>
+
+  <h2>2. 개발 배경 및 목적</h2>
+  <ul>
+    <li>교육 과정 ATmega128A 개인 과제</li>
+    <li>상태 머신(FSM)과 타이머 인터럽트 기반 순차 제어 학습</li>
+  </ul>
+
+  <h2>3. 개발 목표</h2>
+  <ul>
+    <li>세탁 → 헹굼 → 탈수 순차 동작</li>
+    <li>버튼 기반 모드 전환 및 시간 설정</li>
+    <li>FND·LED 상태 표시</li>
+  </ul>
+
+  <h2>4. 동작 방식 (FSM)</h2>
+  <ul>
+    <li>대기 / 동작 / 설정 모드를 버튼으로 전환</li>
+    <li>동작 모드에서 세탁 → 헹굼 → 탈수 순으로 남은 시간 1초씩 감소</li>
+    <li>탈수 종료 시 대기 모드 복귀</li>
+  </ul>
+
+  <h2>5. 주요 구현 내용</h2>
+  <ul>
+    <li>Timer0 1ms 인터럽트 기반 시간 계산</li>
+    <li>Timer3 PWM으로 모터 속도 제어, 세탁·헹굼 중 10초마다 정·역회전 교대</li>
+    <li>FND에 남은 시간과 회전 애니메이션 표시, LED로 현재 단계 표시</li>
+    <li>버튼은 눌렀다 뗀 순간 1회만 인식, 15ms 디바운스</li>
+  </ul>
+
+  <h2>6. 문제 해결</h2>
+
+  <h3>6.1 시작 직후 단계가 바로 넘어감</h3>
+  <dl class="spec">
+    <dt>문제</dt><dd>동작 시작 직후 세탁·헹굼·탈수가 바로 넘어가며 종료</dd>
+    <dt>원인 확인</dt><dd>남은 시간 변수가 0인 상태로 시작해 매 초 "시간 종료"로 판정</dd>
+    <dt>해결</dt><dd>전원 투입 시와 동작 시작 시 설정 시간을 남은 시간으로 복사</dd>
+  </dl>
+
+  <h3>6.2 FND 잔상 및 밝기 저하</h3>
+  <dl class="spec">
+    <dt>문제</dt><dd>FND 숫자가 옆 자리에 겹쳐 보이고 흐리게 표시</dd>
+    <dt>원인 확인</dt><dd>자릿수를 바꾸는 순간 이전 자리 데이터가 남고, 자리별 점등 시간이 너무 짧음</dd>
+    <dt>해결</dt><dd>자릿수 전환 전 출력 초기화, 자리마다 짧은 점등 지연 추가</dd>
+  </dl>
+
+  <h3>6.3 모드 증가에 따른 분기 복잡화</h3>
+  <dl class="spec">
+    <dt>문제</dt><dd>대기 / 세탁 / 헹굼 / 탈수 / 시간 설정 3종을 모드 7개로 나열해, 버튼·FND·LED·모터 코드마다 7개 분기 반복</dd>
+    <dt>해결</dt><dd>대기 / 동작 / 설정 3개 모드로 줄이고, 동작·설정 안의 세탁·헹굼·탈수는 하위 항목으로 분리</dd>
+    <dt>결과</dt><dd>각 모듈의 분기 단순화, 정·역회전 교대 기능을 동작 모드 안에만 추가</dd>
+  </dl>
+
+  <h2>7. 결과</h2>
+  <ul>
+    <li>모드 전환, 단계별 순차 동작, 정·역회전 교대 시연</li>
+  </ul>
+  <img class="shot" src="../assets/img/washing-machine.jpg" alt="세탁기 동작 구현 장치" loading="lazy">
+
+  <h2>8. 느낀 점</h2>
+  <ul>
+    <li>동작을 상태로 나누면 순서 제어와 예외 처리가 단순해진다는 점</li>
+  </ul>
+
+  <p class="back bottom"><a href="../">← 프로젝트 목록</a></p>
+</main>
+</body>
+</html>

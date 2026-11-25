@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>주차 타워 · 신유지 포트폴리오</title>
+<meta name="description" content="주차 타워 입출차 관리 시스템 프로젝트 기술서">
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="../assets/detail.css">
+<script>if (window.top !== window.self) document.documentElement.classList.add("embed");</script>
+</head>
+<body>
+<main>
+
+  <p class="back"><a href="../">← 프로젝트 목록</a></p>
+
+  <header>
+    <p class="when">2026.08 · 팀 4인</p>
+    <h1>주차 타워 입출차 관리 시스템</h1>
+    <p class="one">Qt PC 앱과 STM32가 UART로 연동하는 주차 관리 시스템</p>
+    <ul class="tags"><li class="tag" data-t="C">C</li><li class="tag" data-t="STM32">STM32</li><li class="tag" data-t="UART">UART</li></ul>
+  </header>
+
+  <video class="demo" src="../assets/video/parking-tower.mp4" controls muted playsinline preload="metadata"></video>
+
+  <h2>1. 프로젝트 개요</h2>
+  <dl class="spec">
+    <dt>프로젝트명</dt><dd>주차 타워 입출차 관리 시스템</dd>
+    <dt>수행기간</dt><dd>2026.08.16 ~ 2026.08.19</dd>
+    <dt>수행인원</dt><dd>4인</dd>
+    <dt>담당역할</dt><dd>STM32 초음파 센서 기반 차량 접근 감지 모듈, 파트별 역할 분담</dd>
+    <dt>사용 기술</dt><dd>C, STM32F411(NUCLEO-F411RE), HC-SR04, TIM4/TIM5, UART(115200bps)</dd>
+    <dt>담당 코드</dt><dd><code>STM32_M4/ultrasonic.c</code></dd>
+    <dt>링크</dt><dd><a href="https://github.com/Qt-mini/Qt-miniProject" target="_blank" rel="noopener">GitHub</a></dd>
+  </dl>
+
+  <h2>2. 개발 배경 및 목적</h2>
+  <ul>
+    <li>교육 과정 Qt 미니 프로젝트</li>
+    <li>PC 앱과 MCU 간 UART 연동, 센서 기반 이벤트 처리 학습</li>
+  </ul>
+
+  <h2>3. 개발 목표</h2>
+  <ul>
+    <li>차량 감지 → 입차 → 빈 칸 배정 → 차단기 제어 → 출차 정산 흐름 구현</li>
+    <li>delay 없이 타이머 인터럽트 기반 센서 측정</li>
+  </ul>
+
+  <h2>4. 시스템 구성</h2>
+  <ul>
+    <li>Qt PC 앱: 차량번호 입력, 입·출차 관리, 요금 정산 화면 (팀원 담당)</li>
+    <li>STM32: 초음파 차량 감지, 빈 칸 배정, 서보 차단기 제어</li>
+    <li>연결: Qt ↔ STM32 UART (115200bps)</li>
+  </ul>
+
+  <h2>5. 동작 흐름</h2>
+  <ol>
+    <li>초음파 센서의 차량 접근 감지, STM32 → Qt 감지 이벤트(<code>D</code>) 송신</li>
+    <li>Qt에서 차량번호 입력 후 입차 요청</li>
+    <li>STM32의 가장 낮은 층 빈 칸 배정 및 서보 차단기 개방</li>
+    <li>출차 시 Qt에서 요금 정산</li>
+  </ol>
+
+  <h2>6. 주요 구현 내용 (초음파 감지 모듈)</h2>
+  <ul>
+    <li>Trigger: TIM5 인터럽트 기반 10µs 펄스 생성 (delay 미사용)</li>
+    <li>Echo: TIM4 타이머로 Echo 펄스 폭 측정 후 거리 환산</li>
+    <li>차량 판정: 150mm 이하 3회 연속 시 감지, 200mm 이상 3회 연속 시 해제 (경계 거리 흔들림·노이즈 방지)</li>
+    <li>감지 상태가 "없음 → 감지"로 바뀌는 시점에만 이벤트 1회 송신</li>
+    <li>타이머 인터럽트 기반 측정으로 UART·서보 동작과 병행</li>
+  </ul>
+
+  <h2>7. 문제 해결</h2>
+
+  <h3>7.1 감지 이벤트 반복 송신</h3>
+  <dl class="spec">
+    <dt>문제</dt><dd>차량이 센서 앞에 머무는 동안 감지 이벤트가 계속 송신</dd>
+    <dt>원인</dt><dd>측정할 때마다 거리 조건만으로 이벤트 송신</dd>
+    <dt>해결</dt><dd>감지 상태를 저장하고, 상태가 "없음 → 감지"로 바뀌는 순간에만 1회 송신</dd>
+  </dl>
+
+  <h3>7.2 경계 거리에서 판정 흔들림</h3>
+  <dl class="spec">
+    <dt>문제</dt><dd>기준 거리 부근에서 측정값 흔들림으로 감지·해제 반복</dd>
+    <dt>해결</dt><dd>감지(150mm)와 해제(200mm) 기준을 분리하고 3회 연속 조건 적용</dd>
+  </dl>
+
+  <h2>8. 결과</h2>
+  <ul>
+    <li>차량 접근 감지부터 입차, 차단기 개방, 출차 정산까지 시연</li>
+  </ul>
+  <img class="shot" src="../assets/img/parking-device.jpg" alt="주차 타워 장치" loading="lazy">
+
+  <h2>9. 느낀 점</h2>
+  <ul>
+    <li>센서 값 하나보다 상태와 이력을 함께 봐야 판정이 안정적이라는 점</li>
+  </ul>
+
+  <p class="back bottom"><a href="../">← 프로젝트 목록</a></p>
+</main>
+</body>
+</html>

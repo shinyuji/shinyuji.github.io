@@ -1,0 +1,82 @@
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: "Pretendard Variable", Pretendard, -apple-system, sans-serif;
+  color: #222;
+  background: #fff;
+  line-height: 1.75;
+  word-break: keep-all;
+}
+main { max-width: 820px; margin: 0 auto; padding: 40px 16px 80px; }
+a { color: #1a5fb4; }
+p { margin: 0; }
+h1 { font-size: 30px; margin: 2px 0 4px; line-height: 1.3; }
+h2 { font-size: 20px; margin: 44px 0 10px; padding-bottom: 8px; border-bottom: 1px solid #ddd; }
+h3 { font-size: 16px; margin: 24px 0 6px; }
+ul, ol { margin: 6px 0 0; padding-left: 22px; }
+li { margin: 3px 0; font-size: 15px; }
+li ul { margin-top: 2px; }
+
+.back { font-size: 14px; margin-bottom: 20px; }
+.back a { text-decoration: none; }
+.back.bottom { margin: 48px 0 0; }
+.embed .back { display: none; }
+.embed main { padding-top: 24px; }
+.when { font-size: 13px; color: #888; }
+.one { color: #555; font-size: 15.5px; }
+.links { margin-top: 10px; font-size: 14px; }
+.links a { margin-right: 16px; text-decoration: none; }
+.links a:hover { text-decoration: underline; }
+.label { font-size: 15px; font-weight: 700; margin-top: 14px; }
+.note { font-size: 14px; color: #666; }
+.caption { font-size: 13px; color: #888; margin-top: 6px; }
+
+.tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 0; padding: 0; list-style: none; }
+.tag { font-size: 13px; line-height: 1; padding: 5px 8px; border-radius: 4px; margin: 0; }
+.tag[data-t="C"]            { background: #dbe7ff; }
+.tag[data-t="Python"]       { background: #fff2b3; }
+.tag[data-t="ATmega128A"]   { background: #d6f2df; }
+.tag[data-t="STM32"]        { background: #cfeff0; }
+.tag[data-t="Linux Kernel"] { background: #ffd9c7; }
+.tag[data-t="UART"]         { background: #ffd6e5; }
+.tag[data-t="FSM"]          { background: #ead9ff; }
+.tag[data-t="Verilog"]      { background: #e2e2f7; }
+.tag[data-t="PWM"]          { background: #d4ecff; }
+.tag[data-t="I²C"]          { background: #fde3c4; }
+.tag[data-t="Jetson"]       { background: #e3f0c8; }
+
+.spec { display: grid; grid-template-columns: 76px 1fr; gap: 6px 12px; margin: 10px 0 0; font-size: 14.5px; }
+.spec dt { color: #777; font-weight: 600; }
+.spec dd { margin: 0; }
+.spec dd ul { margin: 0; padding-left: 18px; }
+.spec dd li { font-size: 14.5px; margin: 1px 0; }
+tr.me td { font-weight: 700; }
+
+code { font-size: 13px; background: #f3f3f3; padding: 1px 5px; border-radius: 4px; }
+pre.log { margin: 12px 0 0; padding: 12px 14px; background: #f6f6f6; border-radius: 6px; font-size: 12.5px; line-height: 1.6; overflow-x: auto; }
+
+.table-wrap { overflow-x: auto; margin-top: 10px; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { border-bottom: 1px solid #e6e6e6; padding: 7px 8px; text-align: left; vertical-align: top; }
+th { background: #fafafa; font-weight: 600; white-space: nowrap; }
+td:first-child { white-space: nowrap; }
+
+.diagram { display: flex; align-items: stretch; gap: 8px; margin-top: 12px; }
+.box { flex: 1 1 0; border: 1px solid #ddd; border-radius: 6px; padding: 10px 12px; font-size: 13.5px; line-height: 1.6; }
+.box.mine { border-color: #1a5fb4; background: #f3f7fd; }
+.box-title { font-weight: 700; font-size: 14.5px; margin-bottom: 4px; }
+.wire { flex: 0 0 auto; align-self: center; font-size: 12px; color: #777; text-align: center; }
+.wire::before { content: "⇄"; display: block; font-size: 18px; color: #999; }
+
+.demo { display: block; width: 100%; margin-top: 20px; background: #111; border-radius: 6px; border: 0; }
+.demo.yt { aspect-ratio: 16 / 9; }
+.pair { display: flex; gap: 10px; margin-top: 16px; }
+.pair .shot { flex: 1 1 0; min-width: 0; margin-top: 0; max-height: 260px; }
+.shot { display: block; width: 100%; max-height: 460px; object-fit: contain; margin-top: 24px; border: 1px solid #eee; border-radius: 6px; background: #fff; }
+
+@media (max-width: 560px) {
+  h1 { font-size: 26px; }
+  .diagram { flex-direction: column; }
+  .wire::before { content: "⇅"; }
+  .spec { grid-template-columns: 68px 1fr; }
+}

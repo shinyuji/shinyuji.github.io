@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BreadVision · 신유지 포트폴리오</title>
+<meta name="description" content="BreadVision AI 빵 인식 POS 프로젝트 기술서">
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="../assets/detail.css">
+<script>if (window.top !== window.self) document.documentElement.classList.add("embed");</script>
+</head>
+<body>
+<main>
+
+  <p class="back"><a href="../">← 프로젝트 목록</a></p>
+
+  <header>
+    <p class="when">2026.09 · 팀 4인</p>
+    <h1>BreadVision</h1>
+    <p class="one">카메라로 빵 12종의 종류와 개수를 인식해 자동 계산하는 AI POS</p>
+    <ul class="tags"><li class="tag" data-t="Python">Python</li><li class="tag" data-t="Jetson">Jetson</li></ul>
+  </header>
+
+  <video class="demo" src="../assets/video/breadvision.mp4" controls muted playsinline preload="metadata"></video>
+
+  <h2>1. 프로젝트 개요</h2>
+  <dl class="spec">
+    <dt>프로젝트명</dt><dd>BreadVision (AI 빵 인식 POS)</dd>
+    <dt>수행기간</dt><dd>2026.09.02 ~ 2026.09.15</dd>
+    <dt>수행인원</dt><dd>4인</dd>
+    <dt>담당역할</dt><dd>인식 모델 학습·성능 비교(주 담당), 학습 데이터 촬영(전담), 데이터셋 라벨링(공동)</dd>
+    <dt>사용 기술</dt><dd>Python, Ultralytics YOLO(v8n / 11n / 26n), Google Colab, ONNX, TensorRT, Jetson Orin Nano</dd>
+    <dt>링크</dt><dd><a href="https://github.com/Kyuhyeon34/AI_POS_System" target="_blank" rel="noopener">GitHub</a></dd>
+  </dl>
+
+  <h2>2. 개발 배경 및 목적</h2>
+  <ul>
+    <li>베이커리 빵에는 바코드가 없어, 계산 시 직원이 빵을 하나씩 확인해 수동 입력해야 하는 번거로움과 입력 오류 가능성</li>
+    <li>빵의 모양을 학습시켜 카메라 인식만으로 간편하게 결제하는 POS 개발</li>
+  </ul>
+
+  <h2>3. 개발 목표</h2>
+  <ul>
+    <li>빵 12종 실시간 인식 및 개수 집계</li>
+    <li>Jetson Orin Nano 기반 엣지 추론</li>
+    <li>POS 화면의 주문표·결제 연동</li>
+  </ul>
+
+  <h2>4. 시스템 구성</h2>
+  <ul>
+    <li>카메라 → Jetson Orin Nano(TensorRT 추론) → PC POS(PyQt5) → 주문표·결제</li>
+    <li>회원 QR 적립 앱 연동</li>
+  </ul>
+
+  <h2>5. 주요 구현 내용</h2>
+
+  <h3>5.1 학습 데이터 구축</h3>
+  <ul>
+    <li>빵 12종 자체 촬영: 학습 1,629장, 검증 408장</li>
+    <li>카메라 이동 기구 제작: 3D 출력물, 폼보드, 서보 2개로 카메라 좌우 이동·회전 구성 (기존 좌우 이동 서보 1개에 제자리 회전 서보 추가)</li>
+    <li>배경 정리 및 다양한 구도 확보</li>
+    <li>데이터셋 라벨링 (공동)</li>
+  </ul>
+
+  <h3>5.2 모델 비교 및 선정</h3>
+  <ul>
+    <li>YOLOv8n / YOLO11n / YOLO26n을 동일 데이터로 100 epoch 학습 (Google Colab)</li>
+    <li>테스트 mAP는 YOLO26n이 가장 높았으나, Jetson 실시간 인식 오류는 YOLO11n 22건, YOLO26n 78건</li>
+    <li>실사용 조건 오류 건수 기준으로 YOLO11n 선정</li>
+    <li>ONNX 변환 후 Jetson에서 TensorRT로 추론</li>
+  </ul>
+
+  <h2>6. 문제 해결</h2>
+
+  <h3>6.1 유사 빵 오인식</h3>
+  <dl class="spec">
+    <dt>문제</dt><dd>첫 모델 오류 38건, 대부분 포장된 휘낭시에 3종(색만 다름)과 로투스·플레인 간 혼동</dd>
+    <dt>시도</dt><dd>2단계 분류 구조 적용 → 오류 56건으로 악화, 미채택</dd>
+    <dt>원인 확인</dt><dd>오류 이미지 검토 결과, 라벨 오류와 포장 상태 이미지 부족</dd>
+    <dt>해결</dt><dd>포장 상태 이미지 110장 추가 촬영, 라벨 20장 수정</dd>
+    <dt>결과</dt><dd>오류 38건 → 22건</dd>
+  </dl>
+
+  <h2>7. 결과</h2>
+  <ul>
+    <li>트레이 위 빵 인식, 주문표 생성, 결제 흐름 시연</li>
+  </ul>
+  <img class="shot" src="../assets/img/breadvision-pos.jpg" alt="POS 화면에서 빵 종류를 인식한 모습" loading="lazy">
+
+  <h2>8. 느낀 점</h2>
+  <ul>
+    <li>모델 구조 변경보다 데이터 품질 개선의 효과가 더 크다는 점</li>
+    <li>평균 점수보다 실제 사용 조건의 오류 건수와 오류 이미지를 확인해야 한다는 점</li>
+  </ul>
+
+  <p class="back bottom"><a href="../">← 프로젝트 목록</a></p>
+</main>
+</body>
+</html>
