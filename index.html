@@ -73,19 +73,22 @@
   #drawer { position: fixed; inset: 0; z-index: 50; pointer-events: none; }
   #drawer-dim { position: absolute; inset: 0; background: rgba(0,0,0,.35); opacity: 0; transition: opacity .2s; }
   #drawer-panel {
-    position: absolute; top: 0; right: 0; height: 100%; width: min(760px, 92vw);
-    background: #fff; box-shadow: -4px 0 24px rgba(0,0,0,.15);
+    position: absolute; top: 50%; left: 50%; width: min(860px, 92vw); height: min(90vh, 1000px);
+    background: #fff; border-radius: 10px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,.25);
     display: flex; flex-direction: column;
-    transform: translateX(100%); transition: transform .25s ease;
+    opacity: 0; transform: translate(-50%, -48%); transition: opacity .2s ease, transform .2s ease;
   }
   #drawer.open { pointer-events: auto; }
   #drawer.open #drawer-dim { opacity: 1; }
-  #drawer.open #drawer-panel { transform: none; }
+  #drawer.open #drawer-panel { opacity: 1; transform: translate(-50%, -50%); }
   #drawer-bar { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; border-bottom: 1px solid #eee; font-size: 14px; }
   #drawer-full { text-decoration: none; }
   #drawer-close { border: 0; background: none; font-size: 20px; line-height: 1; cursor: pointer; color: #555; padding: 4px 6px; }
   #drawer-frame { flex: 1; width: 100%; border: 0; }
-  @media (max-width: 560px) { #drawer-panel { width: 100vw; } }
+  @media (max-width: 560px) {
+    #drawer-panel { top: 0; left: auto; right: 0; width: 100vw; height: 100%; border-radius: 0; opacity: 1; transform: translateX(100%); transition: transform .25s ease; }
+    #drawer.open #drawer-panel { transform: none; }
+  }
   .detail { padding: 0 16px 18px; border-top: 1px solid #eee; }
   .label { font-size: 14px; font-weight: 600; color: #555; margin-top: 14px; }
   .detail > ul:first-child { margin-top: 14px; }
@@ -188,7 +191,7 @@
     <summary>
       <div class="frame"><img src="assets/img/yakslot-device.jpg" alt="약SLOT 장치" loading="lazy"></div>
       <div class="head">
-        <p class="when"><span>2026.07 – 08 · 팀 3인 · 제24회 임베디드SW경진대회 출품</span><a class="repo" href="https://github.com/twotwoship/2026ESWContest_free_YAKSLOT/tree/atme" target="_blank" rel="noopener">GitHub ↗</a></p>
+        <p class="when"><span>2026.07 – 09 · 팀 3인 · 제24회 임베디드SW경진대회 출품</span><a class="repo" href="https://github.com/twotwoship/2026ESWContest_free_YAKSLOT/tree/atme" target="_blank" rel="noopener">GitHub ↗</a></p>
         <p class="name">약SLOT</p>
         <p class="one">제조사 블리스터 포장을 그대로 꽂아, 복약 시간에 약을 1정씩 배출하고 기록하는 장치</p>
         <ul class="tags"><li class="tag" data-t="C">C</li><li class="tag" data-t="ATmega128A">ATmega128A</li><li class="tag" data-t="UART">UART</li><li class="tag" data-t="FSM">FSM</li></ul>
