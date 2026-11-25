@@ -89,6 +89,22 @@
     <dt>해결</dt><dd>화면 갱신 플래그(<code>lcd_update_flag</code>) 추가, 시각 읽기(1초)·키패드·버튼 입력 시에만 플래그를 세워 변경이 있을 때만 출력</dd>
   </dl>
 
+  <h3>5.3 I²C ACK 구간 파형 튐 분석</h3>
+  <dl class="spec">
+    <dt>발견</dt><dd>I²C 드라이버 동작 확인을 위해 SDA·SCL을 오실로스코프로 측정하던 중, DS1307에 쓰기 주소(R/W=0)를 보낸 뒤 ACK 구간에서만 SDA가 아주 짧게 High로 튀는 파형 확인. 같은 장치에 읽기 주소(R/W=1)를 보낸 뒤 ACK 구간에는 이 현상이 없어 차이의 원인을 분석</dd>
+    <dt>분석</dt><dd>주소와 R/W 비트까지는 Master(ATmega128A)가 SDA를 구동하고, 이어지는 ACK는 Slave(DS1307)가 구동. 두 장치 사이에서 SDA 제어권이 넘어가는 짧은 공백 동안 선이 풀업 저항에 의해 High로 올라갔다가, Slave가 ACK(Low)를 내리면서 다시 떨어지는 것. 읽기 주소는 마지막 비트가 1(High)이라 선이 이미 High여서 공백이 생겨도 변화가 보이지 않음</dd>
+    <dt>결론</dt><dd>튐은 SCL이 Low인 구간에서만 발생하고 데이터는 SCL이 High일 때 읽으므로 통신 오류가 아님을 확인</dd>
+  </dl>
+  <img class="shot" src="../assets/img/clock-i2c-wide.jpg" alt="DS1307 I²C 통신 파형 (SDA 노랑, SCL 파랑)" loading="lazy">
+  <p class="caption">DS1307 읽기·쓰기 파형 (노랑 SDA, 파랑 SCL)</p>
+
+  <h3>5.4 프로그램 업로드와 LCD 핀 충돌</h3>
+  <dl class="spec">
+    <dt>문제</dt><dd>LCD 데이터선을 연결한 상태에서 ISP 프로그램 업로드와 LCD 동작이 함께 되지 않음</dd>
+    <dt>원인</dt><dd>LCD 데이터선을 ISP 통신에도 쓰이는 포트에 연결. ATmega128A는 핀 하나가 범용 입출력 외에 다른 기능을 겸하는 구조</dd>
+    <dt>해결</dt><dd>LCD 데이터 버스를 ISP와 겹치지 않는 PORTB 상위 4비트(PB4~PB7)로 이동</dd>
+  </dl>
+
   <h2>6. 결과</h2>
   <ul>
     <li>시계 표시, 계산기 입력·계산, 모드 전환 동작</li>
@@ -100,6 +116,7 @@
   <h2>7. 느낀 점</h2>
   <ul>
     <li>데이터시트의 타이밍과 프로토콜을 코드로 옮기며 통신 드라이버를 레지스터 수준에서 이해</li>
+    <li>핀 하나가 여러 기능을 겸하므로, 핀을 배치하기 전에 각 핀의 다른 기능과 겹치는지 먼저 확인해야 한다는 점</li>
   </ul>
 
   <p class="back bottom"><a href="../">← 프로젝트 목록</a></p>
