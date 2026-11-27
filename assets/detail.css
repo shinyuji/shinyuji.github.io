@@ -29,7 +29,7 @@ li ul { margin-top: 2px; }
 .links a:hover { text-decoration: underline; }
 .label { font-size: 15px; font-weight: 700; margin-top: 14px; }
 .note { font-size: 14px; color: #666; }
-.caption { font-size: 13px; color: #888; margin-top: 6px; }
+.caption { font-size: 13px; color: #888; margin-top: 6px; text-align: center; }
 
 .tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 0; padding: 0; list-style: none; }
 .tag { font-size: 13px; line-height: 1; padding: 5px 8px; border-radius: 4px; margin: 0; }
