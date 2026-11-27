@@ -7,7 +7,7 @@
 <meta name="description" content="주차 타워 입출차 관리 시스템 프로젝트 기술서">
 <meta name="robots" content="noindex, nofollow">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
-<link rel="stylesheet" href="../assets/detail.css?v=2">
+<link rel="stylesheet" href="../assets/detail.css?v=6">
 <script>if (window.top !== window.self) document.documentElement.classList.add("embed");</script>
 </head>
 <body>
@@ -53,6 +53,17 @@
     <li>STM32: 초음파 차량 감지, 빈 칸 배정, 서보 차단기 제어</li>
     <li>연결: Qt ↔ STM32 UART (115200bps)</li>
   </ul>
+
+  <div class="pair">
+    <figure>
+      <a href="../assets/img/parking-schematic.png" target="_blank" rel="noopener"><img class="shot" src="../assets/img/parking-schematic.png" alt="STM32 감지 모듈 회로도" loading="lazy"></a>
+      <figcaption class="cap">STM32 감지 모듈 회로도 (서보 PA0, Trig PB4, Echo PB6, LED PC0~7)</figcaption>
+    </figure>
+    <figure>
+      <a href="../assets/img/parking-class.png" target="_blank" rel="noopener"><img class="shot" src="../assets/img/parking-class.png" alt="Qt 앱 클래스 다이어그램" loading="lazy"></a>
+      <figcaption class="cap">Qt 앱 클래스 다이어그램</figcaption>
+    </figure>
+  </div>
 
   <h2>5. 동작 흐름</h2>
   <ol>

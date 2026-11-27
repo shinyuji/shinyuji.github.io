@@ -7,7 +7,7 @@
 <meta name="description" content="Basys3 FPGA I²C 센서 드라이버 프로젝트 기술서">
 <meta name="robots" content="noindex, nofollow">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
-<link rel="stylesheet" href="../assets/detail.css?v=2">
+<link rel="stylesheet" href="../assets/detail.css?v=6">
 <script>if (window.top !== window.self) document.documentElement.classList.add("embed");</script>
 </head>
 <body>
@@ -51,6 +51,28 @@
     <li>Master: I²C(100kHz)로 Slave 레지스터를 하나씩 읽어 출력</li>
     <li>보드 간 연결: JA1 SDA, JA2 SCL, 공통 GND, SDA/SCL 풀업 저항</li>
   </ul>
+
+  <div class="pair">
+    <figure>
+      <a href="../assets/img/fpga-master-block.png" target="_blank" rel="noopener"><img class="shot" src="../assets/img/fpga-master-block.png" alt="Master 보드 RTL 블록 구성도" loading="lazy"></a>
+      <figcaption class="cap">Master 보드 RTL 블록 구성 (담당)</figcaption>
+    </figure>
+    <figure>
+      <a href="../assets/img/fpga-slave-block.png" target="_blank" rel="noopener"><img class="shot" src="../assets/img/fpga-slave-block.png" alt="Slave 보드 RTL 블록 구성도" loading="lazy"></a>
+      <figcaption class="cap">Slave 보드 RTL 블록 구성</figcaption>
+    </figure>
+  </div>
+
+  <div class="pair">
+    <figure>
+      <a href="../assets/img/i2c_sensor_master.svg" target="_blank" rel="noopener"><img class="shot" src="../assets/img/i2c_sensor_master.svg" alt="Master 보드 KiCad 회로도" loading="lazy"></a>
+      <figcaption class="cap">Master 보드 KiCad 회로도 (Basys3, I²C 버스, SSD1306 OLED)</figcaption>
+    </figure>
+    <figure>
+      <a href="../assets/img/i2c_sensor_slave.svg" target="_blank" rel="noopener"><img class="shot" src="../assets/img/i2c_sensor_slave.svg" alt="Slave 보드 KiCad 회로도" loading="lazy"></a>
+      <figcaption class="cap">Slave 보드 KiCad 회로도 (Basys3, HC-SR04, DHT11)</figcaption>
+    </figure>
+  </div>
 
   <h2>5. 주요 구현 내용 (Master)</h2>
   <ul>
